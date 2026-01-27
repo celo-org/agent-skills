@@ -83,17 +83,6 @@ Source: https://github.com/bgd-labs/aave-address-book (AaveV3Celo.sol)
 | CELO | 0x471EcE3750Da237f93B8E339c536989b8978a438 | - |
 | WETH | 0xD221812de1BD094f35587EE8E174B07B6167D9Af | - |
 
-## Curve Finance - Mainnet
-
-| Contract | Address |
-|----------|---------|
-| CRV Token | 0x173fd7434B8B50dF08e3298f173487ebDB35FD14 |
-| Fee Receiver | 0x56bc95Ded2BEF162131905dfd600F2b9F1B380a4 |
-
-Source: https://docs.curve.finance/references/deployed-contracts/
-
-Curve Celo Pools: https://curve.finance/dex/celo/pools/
-
 ## Common Tokens - Mainnet
 
 | Token | Address | Decimals |

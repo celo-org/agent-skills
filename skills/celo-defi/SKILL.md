@@ -27,7 +27,6 @@ This skill covers integrating DeFi protocols on Celo, including Uniswap for swap
 | Uniswap V3/V4 | Primary DEX with concentrated liquidity |
 | Ubeswap | Celo-native DEX, mobile-optimized |
 | Velodrome | Superchain DEX with liquidity mining |
-| Curve | Stablecoin-optimized AMM |
 | Carbon DeFi | Orderbook-like automated trading |
 
 ### Lending & Borrowing
@@ -43,7 +42,6 @@ This skill covers integrating DeFi protocols on Celo, including Uniswap for swap
 | Protocol | Description |
 |----------|-------------|
 | LI.FI | Cross-chain aggregator |
-| Matcha | Route optimization and limit orders |
 
 ### Liquidity & Yield
 
@@ -269,17 +267,6 @@ async function borrowFromAave(
   return hash;
 }
 ```
-
-## Curve Finance
-
-### Contract Addresses - Mainnet
-
-| Contract | Address |
-|----------|---------|
-| CRV Token | 0x173fd7434B8B50dF08e3298f173487ebDB35FD14 |
-| Fee Receiver | 0x56bc95Ded2BEF162131905dfd600F2b9F1B380a4 |
-
-Curve pools on Celo: https://curve.finance/dex/celo/pools/
 
 ## Token Approval
 
