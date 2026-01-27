@@ -31,6 +31,8 @@ This skill covers verifying smart contracts on Celo block explorers, making sour
 
 ### Configuration
 
+Source: https://docs.celo.org/developer/verify/hardhat
+
 ```javascript
 // hardhat.config.js
 require("dotenv").config();
@@ -45,30 +47,27 @@ module.exports = {
       chainId: 42220,
     },
     celoSepolia: {
-      url: "https://forno.celo-sepolia.celo-testnet.org",
+      url: "https://forno.celo-sepolia.celo-testnet.org/",
       accounts: [process.env.PRIVATE_KEY],
       chainId: 11142220,
     },
   },
   etherscan: {
-    apiKey: {
-      celo: process.env.ETHERSCAN_API_KEY,
-      celoSepolia: process.env.ETHERSCAN_API_KEY,
-    },
+    apiKey: process.env.ETHERSCAN_API_KEY,
     customChains: [
       {
         network: "celo",
         chainId: 42220,
         urls: {
-          apiURL: "https://api.celoscan.io/api",
-          browserURL: "https://celoscan.io",
+          apiURL: "https://api.etherscan.io/v2/api",
+          browserURL: "https://celoscan.io/",
         },
       },
       {
         network: "celoSepolia",
         chainId: 11142220,
         urls: {
-          apiURL: "https://api-sepolia.celoscan.io/api",
+          apiURL: "https://api.etherscan.io/v2/api",
           browserURL: "https://sepolia.celoscan.io",
         },
       },
@@ -81,11 +80,11 @@ module.exports = {
 
 ```bash
 # .env
-PRIVATE_KEY=your_private_key
-ETHERSCAN_API_KEY=your_etherscan_api_key
+PRIVATE_KEY=0xYOUR_PRIVATE_KEY
+ETHERSCAN_API_KEY=your_celoscan_api_key
 ```
 
-Get an API key from [Etherscan](https://etherscan.io/myapikey).
+Get an API key from [Etherscan](https://etherscan.io/myapikey) or [Celoscan](https://celoscan.io/myapikey).
 
 ### Verify Commands
 
@@ -126,6 +125,8 @@ npx hardhat verify --network celo 0x1234...5678 --constructor-args arguments.js
 
 ## Foundry Verification
 
+Source: https://docs.celo.org/developer/verify/foundry
+
 ### Configuration
 
 ```toml
@@ -141,25 +142,31 @@ celo = "https://forno.celo.org"
 celoSepolia = "https://forno.celo-sepolia.celo-testnet.org"
 ```
 
+### Environment Setup
+
+```bash
+export ETHERSCAN_API_KEY=<your_etherscan_api_key>
+```
+
 ### Verify Commands
 
-**Mainnet:**
+**Mainnet (Chain ID 42220):**
 ```bash
 forge verify-contract \
   --chain-id 42220 \
-  --etherscan-api-key $ETHERSCAN_API_KEY \
   <CONTRACT_ADDRESS> \
   src/MyContract.sol:MyContract \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
   --watch
 ```
 
-**Testnet:**
+**Testnet (Chain ID 11142220):**
 ```bash
 forge verify-contract \
   --chain-id 11142220 \
-  --etherscan-api-key $ETHERSCAN_API_KEY \
   <CONTRACT_ADDRESS> \
   src/MyContract.sol:MyContract \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
   --watch
 ```
 

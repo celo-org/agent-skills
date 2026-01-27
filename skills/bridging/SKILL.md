@@ -20,26 +20,35 @@ This skill covers bridging assets between Celo and other blockchains, including 
 
 ## Bridge Options
 
-### Native Bridges (L1 ↔ L2)
+### Native Bridge
 
-| Bridge | URL | Networks |
-|--------|-----|----------|
-| Superbridge | https://superbridge.app/celo | Mainnet, Sepolia |
+| Bridge | Mainnet | Testnet |
+|--------|---------|---------|
+| Superbridge | https://superbridge.app/celo | https://testnets.superbridge.app |
 
-Native bridges provide direct transfers between Celo L2 and Ethereum L1 without intermediaries.
+Native bridge provides direct transfers between Celo L2 and Ethereum L1 via the OP Stack standard bridge.
+
+Source: https://docs.celo.org/tooling/bridges
 
 ### Third-Party Bridges
 
 | Bridge | URL | Description |
 |--------|-----|-------------|
-| Squid Router | https://v2.app.squidrouter.com | Cross-chain routing via Axelar |
-| Jumper Exchange | https://jumper.exchange | Multi-chain DEX |
-| Portal (Wormhole) | https://portalbridge.com | Token bridge protocol |
+| Squid Router V2 | https://v2.app.squidrouter.com | Cross-chain routing via Axelar |
+| LayerZero | https://layerzero.network | Omnichain interoperability protocol |
+| Jumper Exchange | https://jumper.exchange | Multi-chain DEX aggregator |
+| Portal (Wormhole) | https://portalbridge.com | Decentralized interoperability layer |
 | AllBridge | https://app.allbridge.io/bridge | EVM and non-EVM chains |
 | Satellite (Axelar) | https://satellite.money | Axelar network bridge |
-| Transporter (CCIP) | https://www.transporter.io | Chainlink CCIP |
-| Layerswap | https://layerswap.io/app | 60+ chains and CEXs |
+| Transporter (CCIP) | https://www.transporter.io | Chainlink CCIP bridge |
+| Layerswap | https://layerswap.io/app | 60+ chains, 15+ CEX integrations |
+| Hyperlane Nexus | https://www.usenexus.org | Messaging and interoperability |
+| Mach Exchange | https://www.mach.exchange | Cross-chain exchange |
+| Galaxy | https://galaxy.exchange/swap | Native DEX on Celo |
 | SmolRefuel | https://smolrefuel.com | Gasless refueling |
+| USDT0 | https://usdt0.to | Native USDT via LayerZero OFT |
+
+Source: https://docs.celo.org/home/bridged-tokens/bridges
 
 ## Native ETH Bridging
 
@@ -108,30 +117,34 @@ async function bridgeETHToCelo(amount: string): Promise<string> {
 
 ## Natively Bridged Tokens
 
-These tokens have official bridges from Ethereum:
+These tokens have official bridges from Ethereum via native bridge:
 
 | Token | L1 Address (Ethereum) | L2 Address (Celo) |
 |-------|----------------------|-------------------|
 | WETH | 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 | 0xD221812de1BD094f35587EE8E174B07B6167D9Af |
-| USDC | 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 | 0xcebA9300f2b948710d2653dD7B07f33A8B32118C |
-| USDT | 0xdac17f958d2ee523a2206206994597c13d831ec7 | 0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e |
-| DAI | 0x6b175474e89094c44da98b954eedeac495271d0f | 0x90Ca507a5D4458a4C6C6249d186b6dCb02a5BCCd |
-| WBTC | 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599 | 0xBAAB46E28388d2779e6E31Fd00cF0e5Ad95E327B |
-| AAVE | 0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9 | 0x7fB0f7dE684FCd0F2D25Ec3bbf34e9BfA5B8B4E0 |
-| LINK | 0x514910771af9ca656af840dff83e8264ecf986ca | 0xB1D77cD06acB1E7Ca01ca1fB1A4faFDC03A628ba |
-| UNI | 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 | 0x71e26d0E519D14591b9dE9a0fE9513A398101490 |
+| WBTC | 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599 | 0x8aC2901Dd8A1F17a1A4768A6bA4C3751e3995B2D |
+| DAI | 0x6B175474E89094C44Da98b954EedeAC495271d0F | 0xac177de2439bd0c7659c61f373dbf247d1f41abe |
+| AAVE | 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9 | 0xF6A54aff8c97f7AF3CC86dbaeE88aF6a7AaB6288 |
+| LINK | 0x514910771af9ca656af840dff83e8264ecf986ca | 0xf630876008a4ed9249fb4cac978ba16827f52e91 |
+| UNI | 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 | 0xeE571697998ec64e32B57D754D700c4dda2f2a0e |
+| CRV | 0xD533a949740bb3306d119CC777fa900bA034cd52 | 0x75184c282e55a7393053f0b8F4F3E7BeAE067fdC |
+| rETH | 0xae78736cd615f374d3085123a210448e74fc6393 | 0x55f3d16e6bd2b8b8e6599df6ef4593ce9dcae9ed |
+
+Source: https://docs.celo.org/home/bridged-tokens
 
 ## Cross-Chain Messaging Protocols
 
 For building cross-chain dApps:
 
-| Protocol | Mainnet | Testnet |
-|----------|---------|---------|
-| Chainlink CCIP | ✓ | - |
-| Hyperlane | ✓ | ✓ (Sepolia) |
-| Wormhole | ✓ | - |
-| LayerZero | ✓ | - |
-| Axelar | ✓ | - |
+| Protocol | URL | Celo Support |
+|----------|-----|--------------|
+| Chainlink CCIP | https://chain.link/cross-chain | Mainnet |
+| Hyperlane | https://www.hyperlane.xyz | Mainnet, Sepolia |
+| Wormhole | https://wormhole.com | Mainnet |
+| LayerZero | https://layerzero.network | Mainnet |
+| Axelar Network | https://axelar.network | Mainnet |
+
+Source: https://docs.celo.org/tooling/bridges/cross-chain-messaging
 
 ## Using LI.FI SDK
 

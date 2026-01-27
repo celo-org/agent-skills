@@ -1,6 +1,6 @@
 # Celo DeFi Contract Addresses
 
-## Uniswap V3 - Mainnet
+## Uniswap V3 - Mainnet (Chain ID: 42220)
 
 | Contract | Address |
 |----------|---------|
@@ -14,6 +14,8 @@
 | Multicall2 | 0x633987602DE5C4F337e3DbF265303A1080324204 |
 | v3Staker | 0x6586FB35393abF7Ff454977a9b3c912d218791C6 |
 
+Source: https://docs.uniswap.org/contracts/v3/reference/deployments/celo-deployments
+
 ## Uniswap V3 - Alfajores Testnet
 
 | Contract | Address |
@@ -25,6 +27,8 @@
 | UniversalRouter | 0x84904B9E85F76a421223565be7b596d7d9A8b8Ce |
 | Permit2 | 0x000000000022D473030F116dDEE9F6B43aC78BA3 |
 
+Source: https://docs.uniswap.org/contracts/v3/reference/deployments/celo-deployments
+
 ## Uniswap V4 - Mainnet
 
 | Contract | Address |
@@ -33,6 +37,23 @@
 | PositionManager | 0xf7965f3981e4d5bc383bfbcb61501763e9068ca9 |
 | V4Quoter | 0x28566da1093609182dff2cb2a91cfd72e61d66cd |
 | UniversalRouter | 0xcb695bc5d3aa22cad1e6df07801b061a05a0233a |
+
+Source: https://docs.celo.org/tooling/contracts/uniswap-contracts
+
+## Ubeswap - Mainnet
+
+| Contract | Address |
+|----------|---------|
+| V3 Factory | 0x67FEa58D5a5a4162cED847E13c2c81c73bf8aeC4 |
+| V3 Universal Router | 0x3C255DED9B25f0BFB4EF1D14234BD2514d7A7A0d |
+| V3 NFT Position Manager | 0x897387c7B996485c3AAa85c94272Cd6C506f8c8F |
+| V2 Factory | 0x62d5b84bE28a183aBB507E125B384122D2C25fAE |
+| V2 Router | 0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121 |
+| UBE Token | 0x71e26d0E519D14591b9dE9a0fE9513A398101490 |
+| V3 Farm Protocol | 0xA6E9069CB055a425Eb41D185b740B22Ec8f51853 |
+| UBE Votable Staking | 0x388D611A57Ac15dCC1B937f287E5E908Ba5ff5c9 |
+
+Source: https://docs.ubeswap.org/code-contracts/contract-addresses
 
 ## Aave V3 - Mainnet
 
@@ -45,20 +66,47 @@
 | ACLManager | 0x7a12dCfd73C1B4cddf294da4cFce75FcaBBa314C |
 | PoolDataProvider | 0x2e0f8D3B1631296cC7c56538D6Eb6032601E15ED |
 | Collector | 0xC959439207dA5341B74aDcdAC59016aa9Be7E9E7 |
+| ConfigEngine | 0xeFb0e084Ba4C1262D89D8d5C3Bb304c42A853311 |
+| Pool Implementation | 0x4A1DDf2757666a474CcCEBA735A9f69ed22b75a8 |
+| Default Incentives Controller | 0x4725A0FdbEB14A77964bC1C221eE3a7982263103 |
 
-## Common Tokens
+Source: https://github.com/bgd-labs/aave-address-book (AaveV3Celo.sol)
 
-| Token | Mainnet Address | Decimals |
-|-------|-----------------|----------|
+## Aave V3 Supported Assets - Mainnet
+
+| Asset | Token Address | aToken Address |
+|-------|---------------|----------------|
+| USDC | 0xcebA9300f2b948710d2653dD7B07f33A8B32118C | 0xFF8309b9e99bfd2D4021bc71a362aBD93dBd4785 |
+| USDT | 0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e | - |
+| USDm | 0x765de816845861e75a25fca122bb6898b8b1282a | - |
+| EURm | 0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73 | - |
+| CELO | 0x471EcE3750Da237f93B8E339c536989b8978a438 | - |
+| WETH | 0xD221812de1BD094f35587EE8E174B07B6167D9Af | - |
+
+## Curve Finance - Mainnet
+
+| Contract | Address |
+|----------|---------|
+| CRV Token | 0x173fd7434B8B50dF08e3298f173487ebDB35FD14 |
+| Fee Receiver | 0x56bc95Ded2BEF162131905dfd600F2b9F1B380a4 |
+
+Source: https://docs.curve.finance/references/deployed-contracts/
+
+Curve Celo Pools: https://curve.finance/dex/celo/pools/
+
+## Common Tokens - Mainnet
+
+| Token | Address | Decimals |
+|-------|---------|----------|
 | CELO (wrapped) | 0x471EcE3750Da237f93B8E339c536989b8978a438 | 18 |
 | USDm | 0x765de816845861e75a25fca122bb6898b8b1282a | 18 |
 | EURm | 0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73 | 18 |
 | USDC | 0xcebA9300f2b948710d2653dD7B07f33A8B32118C | 6 |
 | USDT | 0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e | 6 |
-| WETH | 0x66803FB87aBd4aaC3cbB3fAd7C3aa01f6F3FB207 | 18 |
+| WETH | 0xD221812de1BD094f35587EE8E174B07B6167D9Af | 18 |
 
 ## Notes
 
 - CELO is the native asset but has a wrapped version for DeFi interactions
 - Always verify addresses on Celoscan before use
-- Testnet addresses may differ from mainnet
+- Use the official Aave Address Book package for up-to-date addresses: `@bgd-labs/aave-address-book`

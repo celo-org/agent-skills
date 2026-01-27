@@ -32,24 +32,21 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: {
-      celo: process.env.ETHERSCAN_API_KEY,
-      celoSepolia: process.env.ETHERSCAN_API_KEY,
-    },
+    apiKey: process.env.ETHERSCAN_API_KEY,
     customChains: [
       {
         network: "celo",
         chainId: 42220,
         urls: {
-          apiURL: "https://api.celoscan.io/api",
-          browserURL: "https://celoscan.io",
+          apiURL: "https://api.etherscan.io/v2/api",
+          browserURL: "https://celoscan.io/",
         },
       },
       {
         network: "celoSepolia",
         chainId: 11142220,
         urls: {
-          apiURL: "https://api-sepolia.celoscan.io/api",
+          apiURL: "https://api.etherscan.io/v2/api",
           browserURL: "https://sepolia.celoscan.io",
         },
       },
@@ -79,17 +76,19 @@ celo = "https://forno.celo.org"
 celoSepolia = "https://forno.celo-sepolia.celo-testnet.org"
 
 [etherscan]
-celo = { key = "${ETHERSCAN_API_KEY}", url = "https://api.celoscan.io/api" }
-celoSepolia = { key = "${ETHERSCAN_API_KEY}", url = "https://api-sepolia.celoscan.io/api" }
+celo = { key = "${ETHERSCAN_API_KEY}", chain_id = 42220 }
+celoSepolia = { key = "${ETHERSCAN_API_KEY}", chain_id = 11142220 }
 ```
 
 ## Environment Variables Template
 
 ```bash
 # .env
-PRIVATE_KEY=0x...your_private_key
-ETHERSCAN_API_KEY=your_etherscan_api_key
+PRIVATE_KEY=0xYOUR_PRIVATE_KEY
+ETHERSCAN_API_KEY=your_celoscan_api_key
 ```
+
+Source: https://docs.celo.org/developer/verify/hardhat
 
 ## Verification Scripts
 
@@ -196,6 +195,8 @@ console.log(args); // Use this in verification
 |---------|----------|---------|----------|
 | Mainnet | 42220 | https://forno.celo.org | https://celoscan.io |
 | Sepolia | 11142220 | https://forno.celo-sepolia.celo-testnet.org | https://sepolia.celoscan.io |
+
+Source: https://docs.celo.org/developer/verify/hardhat
 
 ## Common Issues
 

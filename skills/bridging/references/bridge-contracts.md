@@ -38,17 +38,38 @@
 
 | Bridge | Mainnet URL | Testnet URL |
 |--------|-------------|-------------|
-| Superbridge | https://superbridge.app/celo | https://superbridge.app/celo-sepolia |
-| Squid Router | https://v2.app.squidrouter.com | - |
-| Jumper | https://jumper.exchange | - |
-| Portal | https://portalbridge.com | - |
+| Superbridge | https://superbridge.app/celo | https://testnets.superbridge.app |
+| Squid Router V2 | https://v2.app.squidrouter.com | - |
+| LayerZero | https://layerzero.network | - |
+| Jumper Exchange | https://jumper.exchange | - |
+| Portal (Wormhole) | https://portalbridge.com | - |
 | AllBridge | https://app.allbridge.io/bridge | - |
-| Satellite | https://satellite.money | - |
-| Transporter | https://www.transporter.io | - |
+| Satellite (Axelar) | https://satellite.money | - |
+| Transporter (CCIP) | https://www.transporter.io | - |
 | Layerswap | https://layerswap.io/app | - |
+| Hyperlane Nexus | https://www.usenexus.org | - |
+| Mach Exchange | https://www.mach.exchange | - |
+| Galaxy | https://galaxy.exchange/swap | - |
+| SmolRefuel | https://smolrefuel.com | - |
+| USDT0 | https://usdt0.to | - |
+
+Source: https://docs.celo.org/home/bridged-tokens/bridges
+
+## Cross-Chain Messaging Protocol URLs
+
+| Protocol | URL |
+|----------|-----|
+| Chainlink CCIP | https://chain.link/cross-chain |
+| Hyperlane | https://www.hyperlane.xyz |
+| Wormhole | https://wormhole.com |
+| LayerZero | https://layerzero.network |
+| Axelar Network | https://axelar.network |
+
+Source: https://docs.celo.org/tooling/bridges/cross-chain-messaging
 
 ## Notes
 
-- Native bridge contracts are maintained by Celo
+- Native bridge contracts are maintained by Celo via OP Stack standard bridge
 - Always verify addresses on block explorers before use
-- Cross-chain messaging contract addresses may update - check official documentation
+- Cross-chain messaging contract addresses may update - check official protocol documentation
+- For testnet bridging, enable "Testnet" mode in Superbridge settings
