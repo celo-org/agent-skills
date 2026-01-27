@@ -1,6 +1,6 @@
 # Fee Currencies Reference
 
-Source: https://docs.celo.org/developer/fee-currency
+Source: https://viem.sh/docs/chains/celo
 
 ## Overview
 
@@ -25,11 +25,33 @@ Adapters are needed to normalize decimals for tokens that use different precisio
 
 ## Usage with Viem
 
+### Serialize Transaction
+
+```typescript
+import { serializeTransaction } from "viem/celo";
+import { parseGwei, parseEther } from "viem";
+
+// Use the ADAPTER address (not the token address) for feeCurrency
+const USDC_ADAPTER = "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B";
+
+const serialized = serializeTransaction({
+  chainId: 42220,
+  gas: 21001n,
+  feeCurrency: USDC_ADAPTER,
+  maxFeePerGas: parseGwei("20"),
+  maxPriorityFeePerGas: parseGwei("2"),
+  nonce: 69,
+  to: "0x1234512345123451234512345123451234512345",
+  value: parseEther("0.01"),
+});
+```
+
+### Send Transaction
+
 ```typescript
 import { createWalletClient, custom } from "viem";
 import { celo } from "viem/chains";
 
-// Use the ADAPTER address (not the token address) for feeCurrency
 const USDC_ADAPTER = "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B";
 
 const walletClient = createWalletClient({

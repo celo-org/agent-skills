@@ -11,7 +11,7 @@ metadata:
 
 Viem is a lightweight TypeScript library with first-class Celo support. It powers wagmi and RainbowKit.
 
-Source: https://docs.celo.org/tooling/libraries-sdks/viem/index.md
+Source: https://viem.sh/docs/chains/celo
 
 ## When to Use
 
@@ -28,6 +28,8 @@ npm install viem
 
 ## Chain Configuration
 
+Source: https://github.com/wevm/viem (chain definitions)
+
 ### Mainnet
 
 ```typescript
@@ -38,17 +40,29 @@ import { celo } from "viem/chains";
 // Explorer: https://celoscan.io
 ```
 
-### Testnet (Alfajores)
+### Testnet (Celo Sepolia)
 
 ```typescript
-import { celoAlfajores } from "viem/chains";
+import { celoSepolia } from "viem/chains";
 
-// Chain ID: 44787
-// RPC: https://alfajores-forno.celo-testnet.org
-// Explorer: https://celo-alfajores.blockscout.com
+// Chain ID: 11142220
+// RPC: https://forno.celo-sepolia.celo-testnet.org
+// Explorer: https://celo-sepolia.blockscout.com
 ```
 
-Source: https://github.com/wevm/viem (chain definitions)
+### Custom Chain with Celo Config
+
+```typescript
+import { defineChain } from "viem";
+import { chainConfig } from "viem/celo";
+
+export const customCeloChain = defineChain({
+  ...chainConfig,
+  id: 42220,
+  name: "Custom Celo",
+  // ...
+});
+```
 
 ## Client Setup
 
@@ -85,9 +99,9 @@ const [address] = await walletClient.getAddresses();
 
 ## Fee Currency Support
 
-Celo allows paying gas fees in tokens other than CELO. Pass `feeCurrency` to transaction functions.
+Celo allows paying gas fees in tokens other than CELO. Use whitelisted fee currency adapters.
 
-Source: https://docs.celo.org/developer/fee-currency
+Source: https://viem.sh/docs/chains/celo
 
 ### Fee Currency Addresses - Mainnet
 
@@ -102,7 +116,25 @@ Source: https://docs.celo.org/developer/fee-currency
 |-------|-----------------|
 | USDC | 0x4822e58de6f5e485eF90df51C41CE01721331dC0 |
 
-### Transaction with Fee Currency
+### Serialize Transaction with Fee Currency
+
+```typescript
+import { serializeTransaction } from "viem/celo";
+import { parseGwei, parseEther } from "viem";
+
+const serialized = serializeTransaction({
+  chainId: 42220,
+  gas: 21001n,
+  feeCurrency: "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B", // USDC adapter
+  maxFeePerGas: parseGwei("20"),
+  maxPriorityFeePerGas: parseGwei("2"),
+  nonce: 69,
+  to: "0x1234512345123451234512345123451234512345",
+  value: parseEther("0.01"),
+});
+```
+
+### Send Transaction with Fee Currency
 
 ```typescript
 import { createWalletClient, custom, parseEther } from "viem";
@@ -138,26 +170,27 @@ const hash = await walletClient.writeContract({
 });
 ```
 
-## Gas Price for Fee Currency
+## Celo Utilities
 
-When using alternative fee currencies, fetch gas price denominated in that token:
+### Parse Transaction
 
 ```typescript
-import { hexToBigInt } from "viem";
+import { parseTransaction } from "viem/celo";
 
-async function getGasPrice(
-  client: PublicClient,
-  feeCurrencyAddress?: `0x${string}`
-): Promise<bigint> {
-  const priceHex = await client.request({
-    method: "eth_gasPrice",
-    params: feeCurrencyAddress ? [feeCurrencyAddress] : [],
-  });
-  return hexToBigInt(priceHex);
-}
+// Supports CIP-64, EIP-1559, EIP-2930, and Legacy transactions
+const transaction = parseTransaction("0x7cf846...");
+```
 
-// Get gas price in USDC
-const gasPriceInUSDC = await getGasPrice(publicClient, USDC_ADAPTER);
+### Serialize Transaction
+
+```typescript
+import { serializeTransaction } from "viem/celo";
+
+const serialized = serializeTransaction({
+  chainId: 42220,
+  feeCurrency: "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B",
+  // ... other params
+});
 ```
 
 ## Reading Contract Data
@@ -217,6 +250,7 @@ const results = await publicClient.multicall({
 - Fee currency transactions use type `0x7b` (CIP-64)
 - Transactions with fee currencies incur ~50,000 additional gas
 - Omitting `feeCurrency` defaults to paying in CELO
+- Use `viem/celo` for Celo-specific utilities (parseTransaction, serializeTransaction)
 
 ## Dependencies
 

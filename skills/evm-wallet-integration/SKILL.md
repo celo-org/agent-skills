@@ -1,6 +1,6 @@
 ---
 name: evm-wallet-integration
-description: Integrate wallets into Celo dApps. Covers RainbowKit, Dynamic, Reown (WalletConnect), and wallet connection patterns.
+description: Integrate wallets into Celo dApps. Covers RainbowKit, Dynamic, and wallet connection patterns.
 license: Apache-2.0
 metadata:
   author: celo-org
@@ -16,7 +16,7 @@ This skill covers integrating wallet connection libraries into Celo dApps.
 - Adding wallet connection to a dApp
 - Supporting multiple wallet types
 - Implementing authentication flows
-- Building mobile-friendly wallet experiences
+- Building wallet experiences
 
 ## Wallet Connection Libraries
 
@@ -24,14 +24,13 @@ This skill covers integrating wallet connection libraries into Celo dApps.
 |---------|-------------|----------|
 | RainbowKit | Pre-built UI with wagmi | Production React apps |
 | Dynamic | Auth-focused with dashboard | Apps needing user management |
-| Reown (WalletConnect) | Universal wallet protocol | Multi-wallet support |
 | ConnectKit | Simple wagmi integration | Quick setup |
 
 ## RainbowKit
 
 Pre-built, customizable wallet connection for React apps.
 
-Source: https://docs.celo.org/tooling/libraries-sdks/rainbowkit-celo/index.md
+Source: https://www.rainbowkit.com
 
 ### Installation
 
@@ -44,16 +43,16 @@ npm install @rainbow-me/rainbowkit@2 viem@2 wagmi@2 @tanstack/react-query
 ```typescript
 // config.ts
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, celoSepolia } from "wagmi/chains";
 import { http } from "wagmi";
 
 export const config = getDefaultConfig({
   appName: "My Celo App",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
-  chains: [celo, celoAlfajores],
+  chains: [celo, celoSepolia],
   transports: {
     [celo.id]: http(),
-    [celoAlfajores.id]: http(),
+    [celoSepolia.id]: http(),
   },
 });
 ```
@@ -96,29 +95,27 @@ function Header() {
 }
 ```
 
-### Celo Wallet Support
-
-RainbowKit supports Celo-specific wallets:
+### Custom Wallet Groups
 
 ```typescript
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
-  valoraWallet,
-  celoWallet,
   metaMaskWallet,
   coinbaseWallet,
   walletConnectWallet,
+  braveWallet,
+  safeWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
 const connectors = connectorsForWallets(
   [
     {
       groupName: "Recommended",
-      wallets: [valoraWallet, celoWallet, metaMaskWallet],
+      wallets: [metaMaskWallet, coinbaseWallet],
     },
     {
       groupName: "Other",
-      wallets: [coinbaseWallet, walletConnectWallet],
+      wallets: [walletConnectWallet, braveWallet, safeWallet],
     },
   ],
   {
@@ -132,7 +129,7 @@ const connectors = connectorsForWallets(
 
 Authentication-focused wallet connection with user management dashboard.
 
-Source: https://docs.celo.org/tooling/libraries-sdks/dynamic/index.md
+Source: https://docs.dynamic.xyz
 
 ### Installation
 
@@ -168,77 +165,34 @@ function App() {
 3. Select EVM card
 4. Toggle Celo on
 
-### Supported Wallets
+## Custom Implementation
 
-- Valora
-- Celo Wallet
-- Coinbase Wallet
-- MetaMask
-- WalletConnect
+Build wallet connection without a library using wagmi directly.
 
-## Reown (WalletConnect)
-
-Universal wallet connection protocol.
-
-Source: https://docs.celo.org/tooling/libraries-sdks/reown/index.md
-
-### Get Project ID
-
-1. Go to https://cloud.reown.com
-2. Create a new project
-3. Copy the project ID
-
-### With Wagmi
+### Wagmi Configuration
 
 ```typescript
-import { walletConnect } from "wagmi/connectors";
+import { http, createConfig } from "wagmi";
+import { celo, celoSepolia } from "wagmi/chains";
+import { injected, walletConnect, metaMask } from "wagmi/connectors";
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
 
 export const config = createConfig({
-  chains: [celo],
+  chains: [celo, celoSepolia],
   connectors: [
+    injected(),
     walletConnect({ projectId }),
+    metaMask(),
   ],
   transports: {
     [celo.id]: http(),
+    [celoSepolia.id]: http(),
   },
 });
 ```
 
-### AppKit (Full Solution)
-
-```bash
-npm install @reown/appkit @reown/appkit-adapter-wagmi wagmi viem
-```
-
-```tsx
-import { createAppKit } from "@reown/appkit/react";
-import { WagmiProvider } from "wagmi";
-import { celo } from "@reown/appkit/networks";
-
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
-
-const metadata = {
-  name: "My Celo App",
-  description: "My Celo dApp",
-  url: "https://myapp.com",
-  icons: ["https://myapp.com/icon.png"],
-};
-
-createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [celo],
-  metadata,
-  projectId,
-});
-```
-
-## Custom Implementation
-
-Build wallet connection without a library.
-
-### Using Wagmi Directly
+### Wallet Connect Component
 
 ```tsx
 import { useConnect, useConnectors, useAccount, useDisconnect } from "wagmi";
@@ -280,47 +234,19 @@ function WalletConnect() {
 | Network | Chain ID | Import |
 |---------|----------|--------|
 | Mainnet | 42220 | `celo` |
-| Alfajores | 44787 | `celoAlfajores` |
-| Celo Sepolia | 11142220 | Custom |
+| Celo Sepolia | 11142220 | `celoSepolia` |
 
-### Celo Sepolia (Custom)
+### WalletConnect Project ID
 
-```typescript
-import { defineChain } from "viem";
+Required for WalletConnect connections.
 
-export const celoSepolia = defineChain({
-  id: 11142220,
-  name: "Celo Sepolia",
-  nativeCurrency: { name: "CELO", symbol: "CELO", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["https://forno.celo-sepolia.celo-testnet.org"] },
-  },
-  blockExplorers: {
-    default: {
-      name: "Celo Sepolia Explorer",
-      url: "https://celo-sepolia.blockscout.com",
-    },
-  },
-  testnet: true,
-});
-```
+1. Go to https://cloud.reown.com
+2. Create new project
+3. Copy project ID
+4. Add to environment variables
 
-## Mobile Wallet Support
-
-### Valora
-
-Valora is the primary mobile wallet for Celo. Ensure your dApp:
-
-1. Uses WalletConnect for mobile connections
-2. Has proper deep linking configured
-3. Tests on mobile devices
-
-### Mobile Detection
-
-```typescript
-function isMobile(): boolean {
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
+```bash
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
 ```
 
 ## Best Practices
@@ -329,7 +255,7 @@ function isMobile(): boolean {
 2. **Handle Network Switching** - Prompt users to switch to Celo
 3. **Show Connection State** - Clear UI for connected/disconnected
 4. **Handle Errors** - User-friendly error messages
-5. **Test on Mobile** - Valora and mobile browsers
+5. **Test on Mobile** - Mobile browsers and wallet apps
 
 ## Dependencies
 

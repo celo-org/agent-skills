@@ -60,30 +60,13 @@ const connector = safe();
 
 ## RainbowKit Wallets
 
-Source: https://docs.celo.org/tooling/libraries-sdks/rainbowkit-celo/index.md
-
-### Valora Wallet
-
-Celo's primary mobile wallet.
-
-```typescript
-import { valoraWallet } from "@rainbow-me/rainbowkit/wallets";
-```
-
-### Celo Wallet
-
-Browser extension wallet.
-
-```typescript
-import { celoWallet } from "@rainbow-me/rainbowkit/wallets";
-```
+Source: https://www.rainbowkit.com/docs/custom-wallet-list
 
 ### Creating Wallet Groups
 
 ```typescript
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
-  valoraWallet,
   metaMaskWallet,
   coinbaseWallet,
   walletConnectWallet,
@@ -95,15 +78,15 @@ const connectors = connectorsForWallets(
   [
     {
       groupName: "Recommended",
-      wallets: [valoraWallet, metaMaskWallet],
+      wallets: [metaMaskWallet, coinbaseWallet],
     },
     {
       groupName: "Popular",
-      wallets: [coinbaseWallet, walletConnectWallet],
+      wallets: [walletConnectWallet, braveWallet],
     },
     {
       groupName: "Other",
-      wallets: [braveWallet, safeWallet],
+      wallets: [safeWallet],
     },
   ],
   {
@@ -117,7 +100,7 @@ const connectors = connectorsForWallets(
 
 ```typescript
 import { http, createConfig } from "wagmi";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, celoSepolia } from "wagmi/chains";
 import {
   injected,
   metaMask,
@@ -129,7 +112,7 @@ import {
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
 
 export const config = createConfig({
-  chains: [celo, celoAlfajores],
+  chains: [celo, celoSepolia],
   connectors: [
     injected(),
     metaMask(),
@@ -139,7 +122,7 @@ export const config = createConfig({
   ],
   transports: {
     [celo.id]: http("https://forno.celo.org"),
-    [celoAlfajores.id]: http("https://alfajores-forno.celo-testnet.org"),
+    [celoSepolia.id]: http("https://forno.celo-sepolia.celo-testnet.org"),
   },
 });
 ```
@@ -152,7 +135,6 @@ import { createWallet } from "thirdweb/wallets";
 const wallets = [
   createWallet("io.metamask"),
   createWallet("com.coinbase.wallet"),
-  createWallet("app.valora"),
   createWallet("walletConnect"),
 ];
 ```
@@ -189,22 +171,6 @@ function AvailableWallets() {
     </ul>
   );
 }
-```
-
-## Mobile Deep Linking
-
-For mobile wallet connections, ensure proper deep linking:
-
-### Valora
-
-```
-celo://wallet/wc?uri=<wc_uri>
-```
-
-### MetaMask Mobile
-
-```
-https://metamask.app.link/wc?uri=<wc_uri>
 ```
 
 ## WalletConnect Project ID

@@ -247,13 +247,13 @@ export const config = createConfig({
 ### Multiple Networks
 
 ```typescript
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, celoSepolia } from "wagmi/chains";
 
 export const config = createConfig({
-  chains: [celo, celoAlfajores],
+  chains: [celo, celoSepolia],
   transports: {
     [celo.id]: http(),
-    [celoAlfajores.id]: http(),
+    [celoSepolia.id]: http(),
   },
 });
 ```

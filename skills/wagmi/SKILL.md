@@ -33,13 +33,13 @@ npm install wagmi viem@2.x @tanstack/react-query
 ```typescript
 // config.ts
 import { http, createConfig } from "wagmi";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, celoSepolia } from "wagmi/chains";
 
 export const config = createConfig({
-  chains: [celo, celoAlfajores],
+  chains: [celo, celoSepolia],
   transports: {
     [celo.id]: http(),
-    [celoAlfajores.id]: http(),
+    [celoSepolia.id]: http(),
   },
 });
 ```
@@ -48,13 +48,13 @@ export const config = createConfig({
 
 ```typescript
 import { http, createConfig } from "wagmi";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, celoSepolia } from "wagmi/chains";
 import { injected, walletConnect, metaMask } from "wagmi/connectors";
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
 
 export const config = createConfig({
-  chains: [celo, celoAlfajores],
+  chains: [celo, celoSepolia],
   connectors: [
     injected(),
     walletConnect({ projectId }),
@@ -62,7 +62,7 @@ export const config = createConfig({
   ],
   transports: {
     [celo.id]: http(),
-    [celoAlfajores.id]: http(),
+    [celoSepolia.id]: http(),
   },
 });
 ```
@@ -231,7 +231,7 @@ function SendCelo() {
 
 ```tsx
 import { useSwitchChain } from "wagmi";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, celoSepolia } from "wagmi/chains";
 
 function NetworkSwitcher() {
   const { switchChain, isPending } = useSwitchChain();
@@ -245,10 +245,10 @@ function NetworkSwitcher() {
         Switch to Celo Mainnet
       </button>
       <button
-        onClick={() => switchChain({ chainId: celoAlfajores.id })}
+        onClick={() => switchChain({ chainId: celoSepolia.id })}
         disabled={isPending}
       >
-        Switch to Alfajores
+        Switch to Celo Sepolia
       </button>
     </div>
   );
@@ -275,7 +275,6 @@ function NetworkSwitcher() {
 | Network | Chain ID |
 |---------|----------|
 | Celo Mainnet | 42220 |
-| Alfajores Testnet | 44787 |
 | Celo Sepolia | 11142220 |
 
 ## Dependencies
