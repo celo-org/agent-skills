@@ -27,11 +27,39 @@ bunx openskills install celo-org/agent-skills -g
 
 ## Skills
 
+### Development Tools
+
 | Skill | Description |
 |-------|-------------|
 | [evm-hardhat](skills/evm-hardhat) | Hardhat development for EVM chains including Celo. Covers project setup, compilation, testing, deployment, and verification. |
 | [evm-foundry](skills/evm-foundry) | Foundry development for EVM chains including Celo. Covers forge, cast, anvil, testing, deployment, and verification. |
-| [celo-rpc](skills/celo-rpc) | Interact with Celo blockchain via RPC. Covers reading balances, transactions, blocks, and Celo-specific methods like fee currency. |
+| [celo-composer](skills/celo-composer) | Scaffold Celo dApps with templates. Supports React, Next.js, and various wallet providers. |
+| [contract-verification](skills/contract-verification) | Verify smart contracts on Celo. Covers Celoscan, Blockscout, Sourcify, and Remix verification methods. |
+
+### Blockchain Interaction
+
+| Skill | Description |
+|-------|-------------|
+| [celo-rpc](skills/celo-rpc) | Interact with Celo blockchain via RPC. Covers reading balances, transactions, blocks, and Celo-specific methods. |
+| [viem](skills/viem) | TypeScript library for Celo with first-class support for fee currencies and CIP-64 transactions. |
+| [wagmi](skills/wagmi) | React hooks for Celo dApps. Covers wallet connection, contract interaction, and transaction handling. |
+| [fee-abstraction](skills/fee-abstraction) | Pay gas fees with ERC-20 tokens on Celo. Covers supported tokens (USDC, USDT, cUSD), wallet compatibility, and implementation. |
+
+### Wallet Integration
+
+| Skill | Description |
+|-------|-------------|
+| [evm-wallet-integration](skills/evm-wallet-integration) | Integrate wallets into Celo dApps. Covers Reown AppKit, Dynamic, and custom wagmi implementations. |
+| [minipay-integration](skills/minipay-integration) | Build Mini Apps for MiniPay. Covers wallet detection, stablecoin payments, and fee currency support. |
+| [thirdweb](skills/thirdweb) | Full-stack Web3 development with thirdweb SDK. Covers contract deployment, wallet connection, and pre-built components. |
+
+### DeFi & Assets
+
+| Skill | Description |
+|-------|-------------|
+| [celo-stablecoins](skills/celo-stablecoins) | Work with Mento stablecoins (cUSD, cEUR, cREAL) and bridged stables (USDC, USDT) on Celo. |
+| [celo-defi](skills/celo-defi) | DeFi protocol integration on Celo. Covers Uniswap, Aave, and Ubeswap. |
+| [bridging](skills/bridging) | Bridge assets to and from Celo. Covers native bridge, Wormhole, LayerZero, and other bridges. |
 
 ## Skill Structure
 
@@ -49,11 +77,15 @@ Skills activate automatically when relevant tasks are detected.
 
 ## Celo Network Information
 
-| Network | Chain ID | RPC Endpoint |
-|---------|----------|--------------|
-| Celo Mainnet | 42220 | https://forno.celo.org |
-| Celo Sepolia | 11142220 | https://forno.celo-sepolia.celo-testnet.org |
+| Network | Chain ID | RPC Endpoint | Explorer |
+|---------|----------|--------------|----------|
+| Celo Mainnet | 42220 | https://forno.celo.org | https://celoscan.io |
+| Celo Sepolia | 11142220 | https://forno.celo-sepolia.celo-testnet.org | https://sepolia.celoscan.io |
 
+### Block Explorers
+
+- **Celoscan**: https://celoscan.io (Etherscan-style)
+- **Blockscout**: https://celo.blockscout.com (open-source)
 
 ## Contributing
 
