@@ -25,7 +25,10 @@ This skill covers verifying smart contracts on Celo block explorers, making sour
 | Hardhat | Automated deployment workflows |
 | Foundry | Foundry-based projects |
 | Celoscan UI | Quick manual verification |
-| Blockscout | Alternative explorer |
+| Blockscout UI | Alternative explorer UI |
+| Blockscout API | Programmatic verification |
+| Sourcify | Decentralized verification |
+| Remix | Browser-based verification |
 
 ## Hardhat Verification
 
@@ -210,13 +213,128 @@ forge create \
 
 ## Blockscout Verification
 
-Celo Explorer (Blockscout) also supports verification:
+Celo has a Blockscout explorer at [celo.blockscout.com](https://celo.blockscout.com) that supports contract verification.
 
-1. Go to [Celo Explorer](https://explorer.celo.org)
-2. Find your contract
+### Blockscout URLs
+
+| Network | Explorer URL | API Base |
+|---------|--------------|----------|
+| Mainnet | https://celo.blockscout.com | https://celo.blockscout.com/api/v2 |
+| Sepolia | https://celo-sepolia.blockscout.com | https://celo-sepolia.blockscout.com/api/v2 |
+
+### UI Verification
+
+1. Go to [celo.blockscout.com](https://celo.blockscout.com) (or [celo-sepolia.blockscout.com](https://celo-sepolia.blockscout.com) for testnet)
+2. Search for your contract address
 3. Click **Code** tab
 4. Click **Verify & Publish**
-5. Follow similar steps as Celoscan
+5. Select verification method:
+   - **Via flattened source code** - Single file with all imports inlined
+   - **Via standard input JSON** - Compiler standard JSON input
+   - **Via Sourcify** - Decentralized verification
+6. Fill in compiler settings (version, optimization, EVM version)
+7. Submit verification
+
+### API Verification
+
+Blockscout provides a REST API for programmatic verification.
+
+**Flattened Source Code:**
+```bash
+curl -X POST "https://celo.blockscout.com/api/v2/smart-contracts/0xYOUR_ADDRESS/verification/via/flattened-code" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "compiler_version": "v0.8.28+commit.7893614a",
+    "source_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.28;\n...",
+    "is_optimization_enabled": true,
+    "optimization_runs": 200,
+    "contract_name": "MyContract",
+    "evm_version": "paris",
+    "license_type": "mit"
+  }'
+```
+
+**Standard JSON Input:**
+```bash
+curl -X POST "https://celo.blockscout.com/api/v2/smart-contracts/0xYOUR_ADDRESS/verification/via/standard-input" \
+  -F "compiler_version=v0.8.28+commit.7893614a" \
+  -F "contract_name=MyContract" \
+  -F "license_type=mit" \
+  -F "files[0]=@standard-input.json"
+```
+
+**API Endpoints:**
+- Flattened: `POST /api/v2/smart-contracts/{address}/verification/via/flattened-code`
+- Standard JSON: `POST /api/v2/smart-contracts/{address}/verification/via/standard-input`
+- Multi-part: `POST /api/v2/smart-contracts/{address}/verification/via/multi-part`
+- Sourcify: `POST /api/v2/smart-contracts/{address}/verification/via/sourcify`
+
+Source: https://docs.blockscout.com/devs/verification
+
+## Sourcify Verification
+
+Sourcify provides decentralized contract verification that works across multiple explorers.
+
+Source: https://docs.celo.org/developer/verify/remix
+
+### Benefits
+
+- Decentralized storage of verified source code
+- Works with Blockscout and other explorers
+- Metadata hash verification ensures exact source match
+
+### Using Remix Sourcify Plugin
+
+1. Open [Remix IDE](https://remix.ethereum.org)
+2. Go to **Plugin Manager** (plug icon)
+3. Search for "Sourcify" and activate it
+4. Deploy your contract to Celo
+5. In the Sourcify plugin:
+   - Select the deployed contract
+   - Choose the network (Celo Mainnet: 42220, Sepolia: 11142220)
+   - Click **Verify**
+6. Contract will be verified on Sourcify and visible in Blockscout
+
+### Programmatic Sourcify Verification
+
+```bash
+curl -X POST "https://sourcify.dev/server/verify" \
+  -F "address=0xYOUR_ADDRESS" \
+  -F "chain=42220" \
+  -F "files[0]=@MyContract.sol" \
+  -F "files[1]=@metadata.json"
+```
+
+## Remix Verification
+
+Verify contracts directly from Remix IDE using the Etherscan plugin.
+
+Source: https://docs.celo.org/developer/verify/remix
+
+### Setup
+
+1. Open [Remix IDE](https://remix.ethereum.org)
+2. Go to **Plugin Manager**
+3. Activate **Etherscan - Contract Verification** plugin
+
+### Verification Steps
+
+1. Deploy your contract to Celo via Remix
+2. Open the Etherscan plugin (checkmark icon)
+3. Enter your Celoscan API key
+4. Select the contract to verify
+5. Choose network:
+   - Celo Mainnet (Chain ID: 42220)
+   - Celo Sepolia (Chain ID: 11142220)
+6. Click **Verify**
+
+### Configuration for Celo
+
+In Remix settings, add custom network:
+- Network Name: Celo Mainnet
+- Chain ID: 42220
+- API URL: https://api.celoscan.io/api
+- Browser URL: https://celoscan.io
 
 ## Troubleshooting
 

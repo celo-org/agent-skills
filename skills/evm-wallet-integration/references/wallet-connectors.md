@@ -24,15 +24,19 @@ import { metaMask } from "wagmi/connectors";
 const connector = metaMask();
 ```
 
-### WalletConnect
+### WalletConnect (via Reown)
 
-Universal wallet connection via QR code or deep link.
+Universal wallet connection via QR code or deep link. WalletConnect rebranded to Reown in 2024.
+
+- **Library imports**: Still use `walletConnect` from wagmi
+- **Project ID**: Get from [cloud.reown.com](https://cloud.reown.com)
 
 ```typescript
 import { walletConnect } from "wagmi/connectors";
 
+// Get project ID from cloud.reown.com (Reown is WalletConnect's new name)
 const connector = walletConnect({
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
+  projectId: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID!,
 });
 ```
 
@@ -58,42 +62,38 @@ import { safe } from "wagmi/connectors";
 const connector = safe();
 ```
 
-## RainbowKit Wallets
+## Reown AppKit Configuration
 
-Source: https://www.rainbowkit.com/docs/custom-wallet-list
+Source: https://docs.reown.com/appkit
 
-### Creating Wallet Groups
+Reown AppKit provides a pre-built UI and handles wallet connections automatically. Use this instead of manual connector setup for most apps.
 
 ```typescript
-import { connectorsForWallets } from "@rainbow-me/rainbowkit";
-import {
-  metaMaskWallet,
-  coinbaseWallet,
-  walletConnectWallet,
-  braveWallet,
-  safeWallet,
-} from "@rainbow-me/rainbowkit/wallets";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { celo, celoAlfajores } from "@reown/appkit/networks";
+import { createAppKit } from "@reown/appkit/react";
 
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: "Recommended",
-      wallets: [metaMaskWallet, coinbaseWallet],
-    },
-    {
-      groupName: "Popular",
-      wallets: [walletConnectWallet, braveWallet],
-    },
-    {
-      groupName: "Other",
-      wallets: [safeWallet],
-    },
-  ],
-  {
-    appName: "My Celo App",
-    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
-  }
-);
+const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID!;
+
+const wagmiAdapter = new WagmiAdapter({
+  networks: [celo, celoAlfajores],
+  projectId,
+  ssr: true,
+});
+
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [celo, celoAlfajores],
+  projectId,
+  metadata: {
+    name: "My Celo App",
+    description: "Celo dApp",
+    url: "https://myapp.com",
+    icons: ["https://myapp.com/icon.png"],
+  },
+});
+
+export const config = wagmiAdapter.wagmiConfig;
 ```
 
 ## Complete Wagmi Config with Connectors
@@ -173,15 +173,21 @@ function AvailableWallets() {
 }
 ```
 
-## WalletConnect Project ID
+## WalletConnect Project ID (via Reown)
 
-Required for WalletConnect v2 connections.
+Required for WalletConnect v2 connections. Reown (formerly WalletConnect Inc.) provides the cloud infrastructure.
 
-1. Go to https://cloud.reown.com
-2. Create new project
+1. Go to [cloud.reown.com](https://cloud.reown.com)
+2. Create new project (select "AppKit" or "WalletKit")
 3. Copy project ID
 4. Add to environment variables
 
 ```bash
+# For Reown AppKit
+NEXT_PUBLIC_REOWN_PROJECT_ID=your_project_id
+
+# For direct wagmi walletConnect connector (same ID works)
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
 ```
+
+> **Note**: The npm packages and code imports remain `walletConnect` - only the company and cloud console were rebranded to Reown.

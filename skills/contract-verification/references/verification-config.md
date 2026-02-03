@@ -191,12 +191,85 @@ console.log(args); // Use this in verification
 
 ## Network Information
 
-| Network | Chain ID | RPC URL | Explorer |
-|---------|----------|---------|----------|
-| Mainnet | 42220 | https://forno.celo.org | https://celoscan.io |
-| Sepolia | 11142220 | https://forno.celo-sepolia.celo-testnet.org | https://sepolia.celoscan.io |
+| Network | Chain ID | RPC URL | Celoscan | Blockscout |
+|---------|----------|---------|----------|------------|
+| Mainnet | 42220 | https://forno.celo.org | https://celoscan.io | https://celo.blockscout.com |
+| Sepolia | 11142220 | https://forno.celo-sepolia.celo-testnet.org | https://sepolia.celoscan.io | https://celo-sepolia.blockscout.com |
 
 Source: https://docs.celo.org/developer/verify/hardhat
+
+## Blockscout API Verification
+
+### JavaScript Example
+
+```javascript
+// blockscout-verify.js
+async function verifyOnBlockscout(address, sourceCode, compilerVersion, contractName) {
+  const baseUrl = "https://celo.blockscout.com/api/v2";
+
+  const response = await fetch(
+    `${baseUrl}/smart-contracts/${address}/verification/via/flattened-code`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        compiler_version: compilerVersion, // e.g., "v0.8.28+commit.7893614a"
+        source_code: sourceCode,
+        is_optimization_enabled: true,
+        optimization_runs: 200,
+        contract_name: contractName,
+        evm_version: "paris",
+        license_type: "mit",
+        autodetect_constructor_args: true,
+      }),
+    }
+  );
+
+  const result = await response.json();
+  console.log("Verification result:", result);
+  return result;
+}
+```
+
+### cURL Examples
+
+**Flattened Source:**
+```bash
+curl -X POST "https://celo.blockscout.com/api/v2/smart-contracts/0xYOUR_ADDRESS/verification/via/flattened-code" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "compiler_version": "v0.8.28+commit.7893614a",
+    "source_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.28;\ncontract MyContract { ... }",
+    "is_optimization_enabled": true,
+    "optimization_runs": 200,
+    "contract_name": "MyContract",
+    "evm_version": "paris",
+    "license_type": "mit"
+  }'
+```
+
+**Standard JSON Input:**
+```bash
+curl -X POST "https://celo.blockscout.com/api/v2/smart-contracts/0xYOUR_ADDRESS/verification/via/standard-input" \
+  -F "compiler_version=v0.8.28+commit.7893614a" \
+  -F "contract_name=MyContract" \
+  -F "license_type=mit" \
+  -F "autodetect_constructor_args=true" \
+  -F "files[0]=@standard-input.json"
+```
+
+### License Types
+
+| ID | String | License |
+|----|--------|---------|
+| 1 | none | No License |
+| 2 | unlicense | The Unlicense |
+| 3 | mit | MIT License |
+| 4 | gnu_gpl_v2 | GNU GPLv2 |
+| 5 | gnu_gpl_v3 | GNU GPLv3 |
+| 12 | apache_2_0 | Apache 2.0 |
+
+Source: https://docs.blockscout.com/devs/verification
 
 ## Common Issues
 
