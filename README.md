@@ -53,6 +53,13 @@ bunx openskills install celo-org/agent-skills -g
 | [minipay-integration](skills/minipay-integration) | Build Mini Apps for MiniPay. Covers wallet detection, stablecoin payments, and fee currency support. |
 | [thirdweb](skills/thirdweb) | Full-stack Web3 development with thirdweb SDK. Covers contract deployment, wallet connection, and pre-built components. |
 
+### AI Agent Infrastructure
+
+| Skill | Description |
+|-------|-------------|
+| [8004](skills/8004) | ERC-8004 Agent Trust Protocol for AI agent identity, reputation, and validation on Celo. |
+| [x402](skills/x402) | x402 HTTP-native payment protocol for AI agents. Covers pay-per-use APIs and micropayments with stablecoins. |
+
 ### DeFi & Assets
 
 | Skill | Description |
