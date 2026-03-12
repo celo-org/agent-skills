@@ -25,8 +25,8 @@ ERC-8004 establishes trust infrastructure for autonomous AI agents, enabling the
 
 | Registry | Purpose | Key Functions |
 |----------|---------|---------------|
-| **Identity Registry** | Agent discovery via ERC-721 NFTs | `register()`, `agentURI()` |
-| **Reputation Registry** | Feedback and attestations | `giveFeedback()`, `getSummary()` |
+| **Identity Registry** | Agent discovery via ERC-721 NFTs | `register()`, `tokenURI()`, `getAgentWallet()`, `setMetadata()`, `getMetadata()` |
+| **Reputation Registry** | Feedback and attestations | `giveFeedback()`, `revokeFeedback()`, `readFeedback()`, `readAllFeedback()`, `getSummary()`, `appendResponse()`, `getClients()` |
 | **Validation Registry** | Verification hooks | Custom validators |
 
 ### Protocol Stack Position
@@ -44,34 +44,63 @@ Communication Layer (A2A, MCP)
 ## Installation
 
 ```bash
-# JavaScript/TypeScript
-npm install @chaoschain/sdk
-
-# Python
-pip install chaoschain-sdk
+npm install viem
 ```
+
+> ABIs are available at `skills/8004/references/identity-registry-abi.json` and `skills/8004/references/reputation-registry-abi.json`.
 
 ## Contract Addresses
 
-### Celo Mainnet
+### Celo Mainnet (Chain ID: 42220)
 
 | Contract | Address |
 |----------|---------|
-| Identity Registry | Coming Soon (Q1 2026) |
-| Reputation Registry | Coming Soon (Q1 2026) |
+| Identity Registry | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
+| Reputation Registry | `0x8004BAa17C55a88189AE136b182e5fdA19dE9b63` |
 
-### Celo Sepolia (Testnet)
+### Celo Sepolia Testnet (Chain ID: 11142220)
 
 | Contract | Address |
 |----------|---------|
-| Identity Registry | Coming Soon |
-| Reputation Registry | Coming Soon |
+| Identity Registry | `0x8004A818BFB912233c491871b3d84c89A494BD9e` |
+| Reputation Registry | `0x8004B663056A597Dffe9eCcC1965A193B7388713` |
+
+## Setup (viem)
+
+```javascript
+import { createPublicClient, createWalletClient, http, getContract } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { celo, celoAlfajores } from 'viem/chains';
+import identityRegistryAbi from './references/identity-registry-abi.json';
+import reputationRegistryAbi from './references/reputation-registry-abi.json';
+
+// Celo Mainnet addresses
+const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
+const REPUTATION_REGISTRY = '0x8004BAa17C55a88189AE136b182e5fdA19dE9b63';
+
+// Celo Sepolia Testnet addresses
+// const IDENTITY_REGISTRY = '0x8004A818BFB912233c491871b3d84c89A494BD9e';
+// const REPUTATION_REGISTRY = '0x8004B663056A597Dffe9eCcC1965A193B7388713';
+
+const account = privateKeyToAccount('0xYOUR_PRIVATE_KEY');
+
+const publicClient = createPublicClient({
+  chain: celo,
+  transport: http('https://forno.celo.org'),
+});
+
+const walletClient = createWalletClient({
+  account,
+  chain: celo,
+  transport: http('https://forno.celo.org'),
+});
+```
 
 ## Agent Registration
 
-### 1. Create Registration File
+### 1. Agent Metadata Format
 
-Create an agent registration file describing endpoints and capabilities:
+Create an agent metadata JSON and host it (IPFS, HTTPS, etc.):
 
 ```json
 {
@@ -80,80 +109,137 @@ Create an agent registration file describing endpoints and capabilities:
   "description": "Description of capabilities",
   "image": "ipfs://Qm...",
   "endpoints": [
-    {
-      "type": "a2a",
-      "url": "https://example.com/.well-known/agent.json"
-    },
-    {
-      "type": "mcp",
-      "url": "https://example.com/mcp"
-    },
-    {
-      "type": "wallet",
-      "address": "0x...",
-      "chainId": 42220
-    }
+    { "type": "a2a", "url": "https://example.com/.well-known/agent.json" },
+    { "type": "mcp", "url": "https://example.com/mcp" },
+    { "type": "wallet", "address": "0x...", "chainId": 42220 }
   ],
   "supportedTrust": ["reputation", "validation", "tee"]
 }
 ```
 
-### 2. Upload to IPFS
+### 2. Register Agent On-Chain
 
 ```javascript
-import { upload } from "@chaoschain/sdk";
-
-const agentMetadata = {
-  type: "Agent",
-  name: "My AI Agent",
-  description: "AI agent for DeFi operations",
-  // ...
-};
-
-const agentURI = await upload(agentMetadata);
-// Returns: ipfs://QmYourRegistrationFile
-```
-
-### 3. Register Agent
-
-```javascript
-import { IdentityRegistry } from '@chaoschain/sdk';
-import { createPublicClient, http } from 'viem';
-import { celo } from 'viem/chains';
-
-const client = createPublicClient({
-  chain: celo,
-  transport: http('https://forno.celo.org'),
+// Register without URI (minimal)
+const hash = await walletClient.writeContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'register',
+  args: [],
 });
 
-const registry = new IdentityRegistry(client);
+// Register with metadata URI
+const hash = await walletClient.writeContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'register',
+  args: ['ipfs://QmYourAgentMetadata'],
+});
 
-// Register and get agent ID
-const tx = await registry.register(agentURI);
-const agentId = tx.events.Transfer.returnValues.tokenId;
+// Register with URI + custom metadata key-value pairs
+const hash = await walletClient.writeContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'register',
+  args: [
+    'ipfs://QmYourAgentMetadata',
+    [
+      { metadataKey: 'category', metadataValue: '0x' + Buffer.from('defi-trading').toString('hex') },
+      { metadataKey: 'version', metadataValue: '0x' + Buffer.from('1.0.0').toString('hex') },
+    ],
+  ],
+});
 
+// Get agent ID from transaction receipt
+const receipt = await publicClient.waitForTransactionReceipt({ hash });
+const transferLog = receipt.logs.find(log => log.topics.length === 4); // Transfer event
+const agentId = BigInt(transferLog.topics[3]); // tokenId is the 3rd indexed param
 console.log('Agent registered with ID:', agentId);
+```
+
+### 3. Read Agent Data
+
+```javascript
+// Get agent metadata URI
+const agentURI = await publicClient.readContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'tokenURI',
+  args: [agentId],
+});
+
+// Get agent wallet address
+const agentWallet = await publicClient.readContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'getAgentWallet',
+  args: [agentId],
+});
+
+// Get agent owner (NFT holder)
+const owner = await publicClient.readContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'ownerOf',
+  args: [agentId],
+});
+
+// Get custom metadata
+const categoryBytes = await publicClient.readContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'getMetadata',
+  args: [agentId, 'category'],
+});
+```
+
+### 4. Update Agent
+
+```javascript
+// Update agent URI
+await walletClient.writeContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'setAgentURI',
+  args: [agentId, 'ipfs://QmUpdatedMetadata'],
+});
+
+// Set custom metadata
+await walletClient.writeContract({
+  address: IDENTITY_REGISTRY,
+  abi: identityRegistryAbi,
+  functionName: 'setMetadata',
+  args: [agentId, 'status', '0x' + Buffer.from('active').toString('hex')],
+});
 ```
 
 ## Reputation System
 
 ### Give Feedback
 
+> **Note:** Self-feedback is blocked — the agent owner/operators cannot give feedback to their own agent. The `value` field is `int128` (supports negative scores). `valueDecimals` max is 18.
+
 ```javascript
-import { ReputationRegistry } from '@chaoschain/sdk';
+import { keccak256, toBytes } from 'viem';
 
-const reputation = new ReputationRegistry(client);
+const feedbackContent = JSON.stringify({ quality: 'excellent', notes: 'Fast response' });
+const feedbackHash = keccak256(toBytes(feedbackContent));
 
-await reputation.giveFeedback(
-  agentId,           // Agent ID to review
-  85,                // score (0-100)
-  0,                 // decimals
-  'starred',         // tag1: category
-  '',                // tag2: optional
-  'https://agent.example.com',  // endpoint used
-  'ipfs://QmDetailedFeedback',  // detailed feedback URI
-  feedbackHash       // keccak256 of feedback content
-);
+await walletClient.writeContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'giveFeedback',
+  args: [
+    agentId,                              // agentId (uint256)
+    85n,                                  // value (int128) — can be negative
+    0,                                    // valueDecimals (uint8)
+    'starred',                            // tag1: category
+    '',                                   // tag2: optional sub-category
+    'https://agent.example.com',          // endpoint used
+    'ipfs://QmDetailedFeedback',          // feedbackURI for details
+    feedbackHash,                         // keccak256 of feedback content
+  ],
+});
 ```
 
 ### Common Feedback Tags
@@ -164,56 +250,149 @@ await reputation.giveFeedback(
 | `uptime` | Endpoint uptime % | 99.77% |
 | `successRate` | Task success rate % | 89% |
 | `responseTime` | Response time (ms) | 560ms |
-| `reachable` | Endpoint reachable | true/false |
+| `reachable` | Endpoint reachable | 1/0 |
+
+### Revoke Feedback
+
+```javascript
+// Revoke feedback at a specific index (1-indexed)
+await walletClient.writeContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'revokeFeedback',
+  args: [agentId, 1n], // feedbackIndex (uint64, 1-indexed)
+});
+```
+
+### Respond to Feedback
+
+Agents (or anyone) can append responses to feedback entries:
+
+```javascript
+await walletClient.writeContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'appendResponse',
+  args: [
+    agentId,
+    clientAddress,        // address of feedback author
+    1n,                   // feedbackIndex
+    'ipfs://QmResponse',  // responseURI
+    responseHash,         // keccak256 of response content
+  ],
+});
+```
 
 ### Query Reputation
 
 ```javascript
-// Get all feedback for an agent
-const feedback = await reputation.readAllFeedback(agentId);
+// Get all clients who gave feedback
+const clients = await publicClient.readContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'getClients',
+  args: [agentId],
+});
 
-// Get aggregated summary
-const summary = await reputation.getSummary(agentId);
-console.log('Average rating:', summary.averageScore);
-console.log('Total reviews:', summary.totalFeedback);
+// Read a single feedback entry
+const [value, valueDecimals, tag1, tag2, isRevoked] = await publicClient.readContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'readFeedback',
+  args: [agentId, clientAddress, 1n], // feedbackIndex (1-indexed)
+});
+
+// Read all feedback (pass clients array, filter by tags)
+const allFeedback = await publicClient.readContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'readAllFeedback',
+  args: [
+    agentId,
+    clients,    // clientAddresses — pass [] to auto-use all known clients
+    '',         // tag1 filter ('' = all)
+    '',         // tag2 filter ('' = all)
+    false,      // includeRevoked
+  ],
+});
+// Returns: { clients, feedbackIndexes, values, valueDecimals, tag1s, tag2s, revokedStatuses }
+
+// Get aggregated summary (requires clientAddresses)
+const [count, summaryValue, summaryValueDecimals] = await publicClient.readContract({
+  address: REPUTATION_REGISTRY,
+  abi: reputationRegistryAbi,
+  functionName: 'getSummary',
+  args: [
+    agentId,
+    clients,  // clientAddresses (required, cannot be empty)
+    '',       // tag1 filter
+    '',       // tag2 filter
+  ],
+});
+console.log(`Average: ${summaryValue} (${count} reviews, ${summaryValueDecimals} decimals)`);
 ```
 
 ## Trust Verification Workflow
 
 ```javascript
-import { IdentityRegistry, ReputationRegistry } from '@chaoschain/sdk';
+async function verifyAndInteract(targetAgentId, minScore = 70n) {
+  // 1. Verify identity exists (reverts if not)
+  const owner = await publicClient.readContract({
+    address: IDENTITY_REGISTRY,
+    abi: identityRegistryAbi,
+    functionName: 'ownerOf',
+    args: [targetAgentId],
+  });
 
-async function verifyAndInteract(targetAgentId, minReputation = 70) {
-  // 1. Verify identity
-  const identity = await identityRegistry.getAgent(targetAgentId);
-  if (!identity) {
-    throw new Error('Agent not registered');
+  // 2. Get clients and check reputation
+  const clients = await publicClient.readContract({
+    address: REPUTATION_REGISTRY,
+    abi: reputationRegistryAbi,
+    functionName: 'getClients',
+    args: [targetAgentId],
+  });
+
+  if (clients.length > 0) {
+    const [count, summaryValue] = await publicClient.readContract({
+      address: REPUTATION_REGISTRY,
+      abi: reputationRegistryAbi,
+      functionName: 'getSummary',
+      args: [targetAgentId, clients, '', ''],
+    });
+    if (summaryValue < minScore) {
+      throw new Error(`Agent reputation ${summaryValue} below threshold ${minScore}`);
+    }
   }
 
-  // 2. Check reputation
-  const summary = await reputationRegistry.getSummary(targetAgentId);
-  if (summary.averageScore < minReputation) {
-    throw new Error(`Agent reputation ${summary.averageScore} below threshold ${minReputation}`);
-  }
-
-  // 3. Get endpoint
-  const agentData = await fetch(identity.agentURI).then(r => r.json());
+  // 3. Fetch agent metadata and find endpoint
+  const agentURI = await publicClient.readContract({
+    address: IDENTITY_REGISTRY,
+    abi: identityRegistryAbi,
+    functionName: 'tokenURI',
+    args: [targetAgentId],
+  });
+  const agentData = await fetch(agentURI).then(r => r.json());
   const endpoint = agentData.endpoints.find(e => e.type === 'a2a');
 
   // 4. Interact with verified agent
   const result = await interactWithAgent(endpoint.url);
 
   // 5. Submit feedback
-  await reputationRegistry.giveFeedback(
-    targetAgentId,
-    result.success ? 90 : 30,
-    0,
-    result.success ? 'starred' : 'failed',
-    '',
-    endpoint.url,
-    '',
-    ''
-  );
+  await walletClient.writeContract({
+    address: REPUTATION_REGISTRY,
+    abi: reputationRegistryAbi,
+    functionName: 'giveFeedback',
+    args: [
+      targetAgentId,
+      result.success ? 90n : 30n,
+      0,
+      result.success ? 'starred' : 'failed',
+      '',
+      endpoint.url,
+      '',
+      '0x0000000000000000000000000000000000000000000000000000000000000000',
+    ],
+  });
 
   return result;
 }
@@ -224,17 +403,30 @@ async function verifyAndInteract(targetAgentId, minReputation = 70) {
 ERC-8004 and x402 work together for trustworthy paid agent interactions:
 
 ```javascript
-import { IdentityRegistry, ReputationRegistry } from '@chaoschain/sdk';
 import { wrapFetchWithPayment } from 'thirdweb/x402';
 
 async function payTrustedAgent(agentId, serviceUrl) {
-  // 1. Verify trust
-  const summary = await reputationRegistry.getSummary(agentId);
-  if (summary.averageScore < 80) {
-    throw new Error('Agent not trusted enough for payment');
+  // 1. Verify trust via reputation
+  const clients = await publicClient.readContract({
+    address: REPUTATION_REGISTRY,
+    abi: reputationRegistryAbi,
+    functionName: 'getClients',
+    args: [agentId],
+  });
+
+  if (clients.length > 0) {
+    const [count, summaryValue] = await publicClient.readContract({
+      address: REPUTATION_REGISTRY,
+      abi: reputationRegistryAbi,
+      functionName: 'getSummary',
+      args: [agentId, clients, '', ''],
+    });
+    if (summaryValue < 80n) {
+      throw new Error('Agent not trusted enough for payment');
+    }
   }
 
-  // 2. Make paid request
+  // 2. Make paid request via x402
   const fetchWithPayment = wrapFetchWithPayment({
     client,
     account,
@@ -244,39 +436,6 @@ async function payTrustedAgent(agentId, serviceUrl) {
   const response = await fetchWithPayment(serviceUrl);
   return response.json();
 }
-```
-
-## Use Cases
-
-### DeFi Trading Agents
-
-Verify strategy agents before delegating funds:
-
-```javascript
-const strategyAgents = await identityRegistry.searchByCapability('defi-trading');
-const trustedAgents = [];
-
-for (const agent of strategyAgents) {
-  const summary = await reputationRegistry.getSummary(agent.id);
-  if (summary.averageScore >= 85 && summary.totalFeedback >= 100) {
-    trustedAgents.push(agent);
-  }
-}
-```
-
-### Multi-Agent Workflows
-
-Coordinate trusted agents for complex tasks:
-
-```javascript
-const workflow = {
-  research: await findTrustedAgent('research', 80),
-  analysis: await findTrustedAgent('analysis', 85),
-  execution: await findTrustedAgent('execution', 90),
-};
-
-// Execute with trust-verified agents
-await executeWorkflow(workflow);
 ```
 
 ## Validation Registry
