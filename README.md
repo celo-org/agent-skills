@@ -25,6 +25,22 @@ yarn dlx openskills install celo-org/agent-skills -g
 bunx openskills install celo-org/agent-skills -g
 ```
 
+## Source of truth: Celopedia
+
+The skills here are **focused, task-level references** — one tool or protocol
+each, kept small and copy-pasteable.
+
+For anything broader — verified contract addresses, ecosystem and protocol
+data, MiniPay listing requirements, grants, governance, migration guides, or
+cross-cutting Celo questions — **[Celopedia](https://github.com/celo-org/celopedia-skills)
+is the canonical source**, and it is actively maintained against upstream docs
+with a weekly drift check. **Where these skills and Celopedia disagree,
+Celopedia is correct.**
+
+```bash
+npx skills add celo-org/celopedia-skills
+```
+
 ## Skills
 
 ### Development Tools

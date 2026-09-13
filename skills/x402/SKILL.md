@@ -4,7 +4,7 @@ description: x402 HTTP-native payment protocol for AI agents on Celo. Use when i
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # x402: HTTP-Native Agent Payments
@@ -344,3 +344,18 @@ THIRDWEB_SECRET_KEY=your_secret_key
 - [8004](../8004/SKILL.md) - Trust layer for AI agents
 - [thirdweb](../thirdweb/SKILL.md) - Full-stack Web3 development
 - [fee-abstraction](../fee-abstraction/SKILL.md) - Pay gas with stablecoins
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

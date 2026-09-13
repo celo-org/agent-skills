@@ -32,7 +32,7 @@ Best for development and testing. Use a dedicated provider for production.
 | Network | Endpoint |
 |---------|----------|
 | Mainnet | https://rpc.ankr.com/celo |
-| Sepolia | https://rpc.ankr.com/celo_alfajores |
+| Celo Sepolia | https://forno.celo-sepolia.celo-testnet.org |
 
 ### QuickNode
 

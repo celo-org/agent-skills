@@ -16,18 +16,19 @@
 
 Source: https://docs.uniswap.org/contracts/v3/reference/deployments/celo-deployments
 
-## Uniswap V3 - Alfajores Testnet
+## Uniswap V3 - Testnet
 
-| Contract | Address |
-|----------|---------|
-| Factory | 0x229Fd76DA9062C1a10eb4193768E192bdEA99572 |
-| SwapRouter02 | 0x8C456F41A3883bA0ba99f810F7A2Da54D9Ea3EF0 |
-| QuoterV2 | 0x3c1FCF8D6f3A579E98F4AE75EB0adA6de70f5673 |
-| NonfungiblePositionManager | 0x0eC9d3C06Bc0A472A80085244d897bb604548824 |
-| UniversalRouter | 0x84904B9E85F76a421223565be7b596d7d9A8b8Ce |
-| Permit2 | 0x000000000022D473030F116dDEE9F6B43aC78BA3 |
+Alfajores (chain ID `44787`) is **sunset** — its RPC no longer responds — and
+its addresses have been removed from this file. Celo Sepolia (`11142220`) is
+the only testnet.
 
-Source: https://docs.uniswap.org/contracts/v3/reference/deployments/celo-deployments
+For current Celo contract addresses, mainnet and testnet, see
+**[Celopedia](https://github.com/celo-org/celopedia-skills)** → `contracts.md`,
+which is kept in sync with upstream docs by a weekly drift check.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```
 
 ## Uniswap V4 - Mainnet
 

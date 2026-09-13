@@ -70,20 +70,20 @@ Reown AppKit provides a pre-built UI and handles wallet connections automaticall
 
 ```typescript
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
-import { celo, celoAlfajores } from "@reown/appkit/networks";
+import { celo, celoSepolia } from "@reown/appkit/networks";
 import { createAppKit } from "@reown/appkit/react";
 
 const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID!;
 
 const wagmiAdapter = new WagmiAdapter({
-  networks: [celo, celoAlfajores],
+  networks: [celo, celoSepolia],
   projectId,
   ssr: true,
 });
 
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [celo, celoAlfajores],
+  networks: [celo, celoSepolia],
   projectId,
   metadata: {
     name: "My Celo App",

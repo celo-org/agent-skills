@@ -4,7 +4,7 @@ description: ERC-8004 Agent Trust Protocol for AI agent identity, reputation, an
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # ERC-8004: Agent Trust Protocol
@@ -70,7 +70,7 @@ npm install viem
 ```javascript
 import { createPublicClient, createWalletClient, http, getContract } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { celo, celoAlfajores } from 'viem/chains';
+import { celo, celoSepolia } from 'viem/chains';
 import identityRegistryAbi from './references/identity-registry-abi.json';
 import reputationRegistryAbi from './references/reputation-registry-abi.json';
 
@@ -469,3 +469,18 @@ For high-stakes operations, use Validation Registry for additional verification:
 - [x402](../x402/SKILL.md) - Payment layer for AI agents
 - [celo-rpc](../celo-rpc/SKILL.md) - Celo blockchain interaction
 - [viem](../viem/SKILL.md) - TypeScript Ethereum library
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

@@ -4,12 +4,12 @@ description: Build Mini Apps for MiniPay wallet. Use when building applications 
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # MiniPay Integration
 
-This skill covers building Mini Apps for MiniPay, the fastest growing non-custodial wallet in the Global South with 10M+ activations.
+This skill covers building Mini Apps for MiniPay, the fastest growing non-custodial wallet in the Global South with ~18M wallet activations and 470M+ transactions across 66+ countries.
 
 ## When to Use
 
@@ -28,7 +28,7 @@ Key features:
 - Phone number mapping to wallet addresses
 - Sub-cent transaction fees
 - 2MB lightweight footprint
-- Supports USDm (cUSD), USDC, and USDT
+- Supports USDm, USDC, and USDT — **USDT support is mandatory for listing**
 
 ## Quick Start
 
@@ -215,6 +215,56 @@ ngrok http 3000
 - Android/iOS emulators (use real device)
 - Other blockchain networks
 
+## Rules That Block Listing
+
+These are enforced when MiniPay reviews your app. Apply them while writing
+code — a rule you only discover at submission time has already cost you a
+rebuild.
+
+- **USDT support is mandatory.** Every Mini App must transact in USDT
+  natively. Do not add tokens MiniPay does not natively support.
+- **Never expose the wallet address.** No display, no copy-to-clipboard, no
+  share sheet, no address QR — and a truncated `0x123…abc` is **not** an
+  exception; it is still the address. Keep it in state for `balanceOf` and as
+  the transaction `account`, but never render it.
+
+  **Show a username instead**, in this order:
+  1. A username the user set — prompt for one at onboarding if your app has
+     any social surface.
+  2. A generated display name if they haven't — adjective + noun from a word
+     list, hashed deterministically from the address so it stays stable across
+     sessions without any storage. Users read "clever mango" as a name; they
+     read `0x7a3f…` as an error.
+  3. `"Unknown"`, or nothing at all.
+
+  **Nothing on screen beats a hex string.** The phone number via ODIS also
+  works where you genuinely need to identify a real person. A working
+  `displayName()` helper is in Celopedia → `minipay-templates.md` §8.
+- **No withdrawals to arbitrary addresses.** No free-text or paste-an-address
+  field. Pay out only to a destination the app controls or that MiniPay
+  resolves.
+- **Pre-flight against amount + network fee.** The fee is paid in the same
+  stablecoin, so `balance < amount` is a bug — the transfer is affordable, the
+  fee is not, and the transaction reverts in the user's face. Check
+  `balance >= amount + fee` and redirect to
+  `https://link.minipay.xyz/add_cash` on a shortfall.
+- **Three transaction states.** Pending from the signature prompt through
+  confirmation; success only on `waitForTransactionReceipt`, never on
+  submission; failure with descriptive copy. Map errors from **codes and error
+  names**, not message text — message strings change between provider versions
+  and locales.
+- **No CELO or crypto jargon in the UI.** Say Network fee / Deposit /
+  Withdraw / Stablecoin.
+- **About, How to Use, Terms, Privacy, and Support** must all be reachable
+  from the footer or menu, plus an explicit line stating the app is operated
+  by your organisation and not by Opera or MiniPay.
+- **Freeze what you submit.** See the allowlist entry in
+  `references/troubleshooting.md` — contract addresses, method signatures, and
+  URLs are enforced after approval.
+
+Full checklist: `minipay-requirements.md` in the **celopedia-skill**
+(`celo-org/celopedia-skills`).
+
 ## Dependencies
 
 ```json
@@ -234,3 +284,25 @@ ngrok http 3000
 - [testing-guide.md](references/testing-guide.md) - Detailed testing instructions
 - [troubleshooting.md](references/troubleshooting.md) - Common issues and solutions
 - [code-examples.md](references/code-examples.md) - Gas estimation, fee currency, React hooks
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+For MiniPay specifically, Celopedia carries what this skill does not: the
+full two-stage listing checklist (`minipay-requirements.md`), a symptom → fix
+router for rejected apps (`minipay-common-mistakes.md`), the app-fit
+scorecard, the live Mini App catalog with per-country targeting, the
+performance playbook for the PageSpeed listing bar, ODIS phone resolution,
+deeplinks, and MiniPay's custom RPC methods.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

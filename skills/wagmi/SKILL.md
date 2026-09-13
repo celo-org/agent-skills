@@ -4,7 +4,7 @@ description: Use wagmi React hooks for Celo dApps. Includes wallet connection, t
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Wagmi for Celo
@@ -292,3 +292,18 @@ function NetworkSwitcher() {
 ## Additional Resources
 
 - [hooks-reference.md](references/hooks-reference.md) - Complete hooks reference
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

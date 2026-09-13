@@ -4,7 +4,7 @@ description: Use thirdweb SDK for Celo development. Includes wallet connection, 
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Thirdweb for Celo
@@ -298,3 +298,18 @@ THIRDWEB_SECRET_KEY=your_secret_key  # Server-side only
 ## Additional Resources
 
 - [extensions.md](references/extensions.md) - Available contract extensions
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

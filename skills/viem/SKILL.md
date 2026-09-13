@@ -4,7 +4,7 @@ description: Use viem for Celo development. Includes fee currency support, trans
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Viem for Celo
@@ -248,7 +248,7 @@ const results = await publicClient.multicall({
 
 - Viem is the recommended library for Celo (ethers.js and web3.js don't support `feeCurrency`)
 - Fee currency transactions use type `0x7b` (CIP-64)
-- Transactions with fee currencies incur ~50,000 additional gas
+- Transactions with fee currencies cost ~2.5–3.5× the gas of a CELO-paid transaction — measured +40,700 (USDm), +71,700 (USDT), +114,712 (USDC). Not a flat ~50,000. See `references/fee-currencies.md` → _Gas overhead_
 - Omitting `feeCurrency` defaults to paying in CELO
 - Use `viem/celo` for Celo-specific utilities (parseTransaction, serializeTransaction)
 
@@ -265,3 +265,18 @@ const results = await publicClient.multicall({
 ## Additional Resources
 
 - [fee-currencies.md](references/fee-currencies.md) - Complete fee currency reference
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

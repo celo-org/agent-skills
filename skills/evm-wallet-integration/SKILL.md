@@ -4,7 +4,7 @@ description: Integrate wallets into Celo dApps. Covers RainbowKit, Dynamic, and 
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # EVM Wallet Integration for Celo
@@ -52,12 +52,12 @@ npm install @reown/appkit @reown/appkit-adapter-wagmi wagmi viem @tanstack/react
 ```typescript
 // config.ts
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
-import { celo, celoAlfajores } from "@reown/appkit/networks";
+import { celo, celoSepolia } from "@reown/appkit/networks";
 
 const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID!;
 
 export const wagmiAdapter = new WagmiAdapter({
-  networks: [celo, celoAlfajores],
+  networks: [celo, celoSepolia],
   projectId,
   ssr: true,
 });
@@ -73,13 +73,13 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createAppKit } from "@reown/appkit/react";
 import { wagmiAdapter } from "./config";
-import { celo, celoAlfajores } from "@reown/appkit/networks";
+import { celo, celoSepolia } from "@reown/appkit/networks";
 
 const queryClient = new QueryClient();
 
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [celo, celoAlfajores],
+  networks: [celo, celoSepolia],
   projectId: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID!,
   metadata: {
     name: "My Celo App",
@@ -267,7 +267,7 @@ function WalletConnect() {
 | Network | Chain ID | Reown Import | Wagmi Import |
 |---------|----------|--------------|--------------|
 | Mainnet | 42220 | `celo` from `@reown/appkit/networks` | `celo` from `wagmi/chains` |
-| Celo Alfajores | 44787 | `celoAlfajores` from `@reown/appkit/networks` | `celoAlfajores` from `wagmi/chains` |
+| Celo Sepolia | 11142220 | `celoSepolia` from `@reown/appkit/networks` | `celoSepolia` from `wagmi/chains` |
 | Celo Sepolia | 11142220 | - | `celoSepolia` from `wagmi/chains` |
 
 ### Reown Project ID
@@ -324,3 +324,18 @@ NEXT_PUBLIC_REOWN_PROJECT_ID=your_project_id
 ## Additional Resources
 
 - [wallet-connectors.md](references/wallet-connectors.md) - Connector configuration reference
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

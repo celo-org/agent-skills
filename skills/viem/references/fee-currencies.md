@@ -101,7 +101,20 @@ Fee currency transactions use CIP-64 transaction type `0x7b` (123 in decimal).
 
 ## Gas Overhead
 
-Transactions using non-CELO fee currencies incur approximately 50,000 additional gas for the fee currency conversion.
+Paying the network fee in a stablecoin costs meaningfully more gas than paying in CELO, and **the overhead is not a constant** — it depends on the token, because 6-decimal tokens route through an adapter.
+
+Measured over **2,600 consecutive Celo mainnet blocks** (ending block 77,155,261), comparing `gasUsed` of ERC-20 `transfer` calls paid in CELO against identical transfers that set `feeCurrency`:
+
+| Fee currency | Paid in CELO | Paid in the token | Overhead | Samples (token / CELO) |
+|---|---|---|---|---|
+| USDm (18-dec, no adapter) | 39,799 | 80,499 | **≈ +40,700** | 1 / 1 |
+| USDT (6-dec, adapter) | 43,801 | 115,501 | **≈ +71,700** | 6,970 / 3,143 |
+| USDC (6-dec, adapter) | 45,047 | 159,759 | **≈ +114,712** | 7 / 100 |
+
+Medians; distributions are tight (USDT p25 = p75 = 115,501).
+
+**Budget ~2.5–3.5× the gas of an equivalent CELO-paid transaction**, not a flat number — set gas limits from the fee-currency figures or estimation will fail. The USDT row is measured across ~10,000 transactions; USDm and USDC fee-currency samples are small because almost nobody pays fees in them (6,970 of 6,978 fee-currency transfers in the window were USDT), so treat those two rows as indicative.
+
 
 ## Library Support
 

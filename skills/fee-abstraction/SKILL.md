@@ -4,7 +4,7 @@ description: Pay gas fees with ERC-20 tokens on Celo. Covers supported tokens, i
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Fee Abstraction on Celo
@@ -145,7 +145,20 @@ Fee currency transactions use CIP-64 type `0x7b` (123 decimal). This is a Celo-s
 
 ### Gas Overhead
 
-Non-CELO fee currencies add approximately 50,000 gas overhead for the currency conversion.
+Paying the network fee in a stablecoin costs meaningfully more gas than paying in CELO, and **the overhead is not a constant** — it depends on the token, because 6-decimal tokens route through an adapter.
+
+Measured over **2,600 consecutive Celo mainnet blocks** (ending block 77,155,261), comparing `gasUsed` of ERC-20 `transfer` calls paid in CELO against identical transfers that set `feeCurrency`:
+
+| Fee currency | Paid in CELO | Paid in the token | Overhead | Samples (token / CELO) |
+|---|---|---|---|---|
+| USDm (18-dec, no adapter) | 39,799 | 80,499 | **≈ +40,700** | 1 / 1 |
+| USDT (6-dec, adapter) | 43,801 | 115,501 | **≈ +71,700** | 6,970 / 3,143 |
+| USDC (6-dec, adapter) | 45,047 | 159,759 | **≈ +114,712** | 7 / 100 |
+
+Medians; distributions are tight (USDT p25 = p75 = 115,501).
+
+**Budget ~2.5–3.5× the gas of an equivalent CELO-paid transaction**, not a flat number — set gas limits from the fee-currency figures or estimation will fail. The USDT row is measured across ~10,000 transactions; USDm and USDC fee-currency samples are small because almost nobody pays fees in them (6,970 of 6,978 fee-currency transfers in the window were USDT), so treat those two rows as indicative.
+
 
 ### Adapters vs Token Addresses
 
@@ -321,3 +334,18 @@ async function sponsorUserTransfer() {
 
 - [fee-currencies.md](references/fee-currencies.md) - Complete token addresses and adapters
 - [wallet-support.md](references/wallet-support.md) - Detailed wallet compatibility guide
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```

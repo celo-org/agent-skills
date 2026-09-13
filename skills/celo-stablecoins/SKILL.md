@@ -4,7 +4,7 @@ description: Working with Celo's stablecoin ecosystem. Use when building with US
 license: Apache-2.0
 metadata:
   author: celo-org
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Celo Stablecoins
@@ -234,3 +234,18 @@ Always check the decimals of a token before formatting or parsing amounts.
 ## Additional Resources
 
 - [token-addresses.md](references/token-addresses.md) - Complete token address reference
+
+---
+
+## Source of truth: Celopedia
+
+These skills are **focused, task-level references**. For anything broader —
+verified contract addresses, ecosystem and protocol data, listing
+requirements, grants, governance, migration guides, or cross-cutting Celo
+questions — **[Celopedia](https://github.com/celo-org/celopedia-skills) is the
+canonical source and is kept current.** Where this skill and Celopedia
+disagree, Celopedia wins.
+
+```bash
+npx skills add celo-org/celopedia-skills
+```
