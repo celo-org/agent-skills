@@ -35,6 +35,7 @@ Forno is a rate-limited, best-effort service. For production, use a dedicated RP
 | Infura | https://celo-mainnet.infura.io/v3/{API_KEY} | https://celo-sepolia.infura.io/v3/{API_KEY} |
 | Ankr | https://rpc.ankr.com/celo | https://rpc.ankr.com/celo_testnet |
 | QuickNode | Custom endpoint via dashboard | Custom endpoint via dashboard |
+| SwiftNodes | https://rpc.swiftnodes.io/rpc/celo?key={API_KEY} | Not available |
 
 ## Block Explorers
 
